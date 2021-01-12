@@ -1,0 +1,16 @@
+*.pyc
+*.mat
+*.gz
+train_simple
+networks*
+pretrained-networks
+results
+outputs*
+*.ckpt.meta
+*.ckpt
+.DS_Store
+COCO_images*
+training-images
+training-images-sample
+logs
+./certs

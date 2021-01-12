@@ -1,0 +1,41 @@
+{
+    "variables": {
+      "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+      "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+      "region": "us-east-1",
+      "short_name": null
+    },
+    "builders": [
+      {
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "{{user `region`}}",
+        "source_ami_filter": {
+          "filters": {
+            "virtualization-type": "hvm",
+            "name": "Deep Learning AMI (Ubuntu 18.04)*",
+            "root-device-type": "ebs"
+          },
+          "owners": ["898082745236"],
+          "most_recent": true
+        },
+        "instance_type": "t3a.micro",
+        "ssh_username": "ubuntu",
+        "ami_name": "{{user `short_name`}}-amd64"
+      }
+    ],
+    "provisioners": [
+      {
+        "type": "file",
+        "source": "./vm-install.sh",
+        "destination": "/home/ubuntu/vm-install.sh"
+      },
+      {
+        "type": "shell",
+        "inline": [
+          "sudo bash -ex ./vm-install.sh {{user `short_name`}}"
+        ]
+      }
+    ]
+  }

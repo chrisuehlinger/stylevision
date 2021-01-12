@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darger Output Page</title>
+    <style>
+        textarea {
+            width: 500px;
+            min-height: 75px;
+        }
+        video {
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    Browser base64 Session Description<br />
+    <textarea id="localSessionDescription" readonly="true"></textarea> <br />
+
+    Golang base64 Session Description<br />
+    <textarea id="remoteSessionDescription" readonly="true"></textarea> <br />
+
+    Remote <br />
+    <video id="remoteVideo" autoplay playsinline muted controls></video> <br />
+
+    Logs<br />
+    <div id="stats"></div>
+    <div id="logs"></div>
+    <script>
+        var log = msg => {
+            document.getElementById('logs').innerHTML += msg + '<br>'
+        }
+        connectToSender();
+
+        async function connectToSender(){
+            console.log('CONNECTING TO SENDER');
+            try {
+                // const stream = await navigator.mediaDevices.getUserMedia({
+                //     video: true,
+                //     audio: false
+                // })
+                // console.log('GOT');
+                // const videoTrack = stream.getVideoTracks()[0];
+
+                let pc = new RTCPeerConnection({
+                    iceServers: [
+                        // {
+                        // urls: 'stun:stun.l.google.com:19302'
+                        // }
+                    ]
+                }, {
+                    optional: [
+                        { googCpuOveruseDetection: false }
+                    ]
+                })
+                window.conn = pc;
+                // pc.addTrack(videoTrack, stream);
+                pc.addTransceiver('video', {
+                    direction: 'recvonly',
+                    sendEncodings: [
+                        {
+                            maxBitrate: 4096000
+                        },
+                    ]
+                })
+
+                let inboundTrack
+                pc.ontrack = event => {
+                    const videoEl = document.getElementById('remoteVideo');
+                    const inboundStream = event.streams[0];
+                    videoEl.srcObject = inboundStream;
+                    inboundTrack = inboundStream.getVideoTracks()[0];
+                }
+
+                pc.onicecandidate = async event => {
+                    if (event.candidate === null) {
+                        console.log('HUH')
+                        await new Promise(resolve => setTimeout(resolve, 5000));
+                        document.getElementById('localSessionDescription').value = pc.localDescription.sdp;
+                        const videobitrate = 2048;
+                        var offer = pc.localDescription;
+                        // Set bandwidth for video
+                        // offer.sdp = offer.sdp.replace(/(m=video.*\r\n)/g, `m=video 9 UDP/TLS/RTP/SAVPF 108 124 123\r\n`);
+                        // offer.sdp = offer.sdp.replace(/(m=video.*\r\n)/g, `m=video 9 UDP/TLS/RTP/SAVPF 127 125 108 124 123\r\nb=AS:${videobitrate}\r\n`);
+                        // await pc.setLocalDescription(offer);
+                        console.log('SENDER OFFER', pc.localDescription.sdp);
+                        const response = await fetch('/connectsender', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body:JSON.stringify(pc.localDescription)
+                        });
+
+                        const answer = await response.json();
+                        document.getElementById('remoteSessionDescription').value = answer.sdp;
+                        
+                        console.log('SENDER ANSWER', answer.sdp);
+                        if (answer === '') {
+                            return alert('Session Description must not be empty')
+                        }
+
+                        try {
+                            await pc.setRemoteDescription(new RTCSessionDescription(answer))
+                        } catch (e) {
+                            alert(e)
+                        }
+
+                    } else {
+                        console.log('SENDER CANDIDATE', event.candidate && event.candidate.candidate)
+                    }
+                }
+                setInterval(async () => {
+                    let stats = '';
+
+                    if(inboundTrack) {
+                        let inSettings = inboundTrack.getSettings();
+                        stats += `Inbound track: ${inSettings.width}x${inSettings.height} ${inSettings.frameRate}FPS`;
+                        stats += `<br />`;
+                    }
+
+                    document.getElementById('stats').innerHTML = stats;
+                    // let sender = pc.getSenders()[0]
+                    // let rawstats = await sender.getStats();
+                    // let senderStats = [];
+                    // rawstats.forEach(stat => senderStats.push(stat));
+                    // console.log('SENDER STATS:', senderStats)
+                    // console.log('STATS', stats, stats.type )
+                    // let parameters = sender.getParameters();
+                    // console.log('PARAMETERS', parameters);
+                    // parameters.encodings[0].priority = 'high';
+                    // parameters.encodings[0].networkPriority = 'high';
+                    // // parameters.rtcp.reducedSize = false;
+                    // sender.setParameters(parameters);
+                }, 1000);
+                pc.setLocalDescription(await pc.createOffer());
+                console.log('SET SENDER LOCAL DESCRIPTION');
+                
+            }catch(e){
+                log(e)
+            }
+
+        }
+
+    </script>
+</body>
+
+</html>
