@@ -1,0 +1,88 @@
+Start time: Thu Dec 31 00:45:17 EST 2020
+Number of epochs: 10
+Number of images: 81432
+
+Iteration 0
+  content loss: 25755.9
+    style loss: 1.9556e+06
+       tv loss: 0.00172539
+    total loss: 1.98136e+06
+
+
+Iteration 10000
+  content loss: 25920.4
+    style loss: 26570.1
+       tv loss: 0.00237758
+    total loss: 52490.6
+
+
+Iteration 20000
+  content loss: 21664.6
+    style loss: 15827.1
+       tv loss: 0.00246127
+    total loss: 37491.6
+
+
+Iteration 30000
+  content loss: 21551
+    style loss: 15400.3
+       tv loss: 0.00227567
+    total loss: 36951.4
+
+
+Iteration 40000
+  content loss: 21562.1
+    style loss: 18067.8
+       tv loss: 0.00226759
+    total loss: 39629.9
+
+
+Iteration 50000
+  content loss: 20468.3
+    style loss: 12371.9
+       tv loss: 0.00216742
+    total loss: 32840.2
+
+
+Iteration 60000
+  content loss: 20220.6
+    style loss: 15523.4
+       tv loss: 0.00204972
+    total loss: 35744
+
+
+Iteration 70000
+  content loss: 19812.5
+    style loss: 13709.7
+       tv loss: 0.00211472
+    total loss: 33522.2
+
+
+Iteration 80000
+  content loss: 20585.4
+    style loss: 11685
+       tv loss: 0.00212355
+    total loss: 32270.5
+
+
+Iteration 90000
+  content loss: 19694.4
+    style loss: 11477
+       tv loss: 0.00214872
+    total loss: 31171.4
+
+
+Iteration 100000
+  content loss: 21100.1
+    style loss: 12659
+       tv loss: 0.0020388
+    total loss: 33759.1
+
+
+Iteration 101789
+  content loss: 19347.1
+    style loss: 11860.8
+       tv loss: 0.00206384
+    total loss: 31208
+
+Finish time: Thu Dec 31 12:42:32 EST 2020

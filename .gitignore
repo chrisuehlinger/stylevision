@@ -3,7 +3,10 @@
 *.gz
 train_simple
 networks*
-pretrained-networks
+pretrained-networks/*
+!pretrained-networks/candy-network/
+!pretrained-networks/darger3-network/
+!pretrained-networks/starry-night-network/
 results
 outputs*
 *.ckpt.meta

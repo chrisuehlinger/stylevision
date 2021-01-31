@@ -1,0 +1,11 @@
+Start time: Wed Dec 30 03:14:17 EST 2020
+Number of epochs: 5
+Number of images: 81432
+
+Final Loss:
+  content loss: 27217.1
+    style loss: 24603.5
+       tv loss: 0.00118585
+    total loss: 51820.7
+
+Finish time: Wed Dec 30 09:15:17 EST 2020
