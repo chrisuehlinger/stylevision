@@ -13,7 +13,7 @@ rm -fdr training-images
 mkdir training-images
 
 time docker run --runtime=nvidia --rm \
-    --volume /home/chris/Downloads/test2015:/var/input-images \
+    --volume /path/to/imagefolder:/var/input-images \
     --volume $(pwd)/training-images:/var/output-images \
     -it uehreka/darger-tf-style ./prepare-training-images.sh
 
