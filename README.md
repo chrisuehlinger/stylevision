@@ -14,20 +14,20 @@ But don't despair! You can still deploy this thing to the cloud and tinker with 
 
 To start you'll need to be using the Nvidia drivers, not the FOSS Nouveau drivers. The instructions for this vary from distro-to-distro, but if you're starting from scratch [Pop!_OS](https://pop.system76.com/) has a version that comes with them pre-installed, which is nice.
 
-1. **Install Nvidia Docker** Follow [Nvidia's instructions](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to install the latest version of nvidia-docker. Those instructions also include steps to install docker itself, if you don't have it already.
-2. **Run ./build.sh** This will build the docker image you'll be using. If it's your first time building the image it'll take up to half an hour on most hardware, but after that if you change something it'll probably only take a second or two.
-3. **Run ./run.sh** This will spin up the docker container and start running the system.
-4. **Try it out** When the words "IN DEVELOPMENT" show up in the logs, you're good to go. Visit https://localhost:8080/camera.html to capture input from your webcam, and https://localhost:8080/projector.html to view the output.
+1. **Install Nvidia Docker** - Follow [Nvidia's instructions](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to install the latest version of nvidia-docker. Those instructions also include steps to install docker itself, if you don't have it already.
+2. **Run ./build.sh** - This will build the docker image you'll be using. If it's your first time building the image it'll take up to half an hour on most hardware, but after that if you change something it'll probably only take a second or two.
+3. **Run ./run.sh** - This will spin up the docker container and start running the system.
+4. **Try it out** - When the words "IN DEVELOPMENT" show up in the logs, you're good to go. Visit https://localhost:8080/camera.html to capture input from your webcam, and https://localhost:8080/projector.html to view the output.
 
 ### Windows
 
 This is gonna be a little rough, and these instructions may eventually become obsolete, but this is how I set up my local dev environment.
 
-1. **Install WSL2** Here are [Microsoft's instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
-2. **Install nvidia-docker on WSL2** Here's [a tutorial](https://medium.com/@dalgibbard/docker-with-gpu-support-in-wsl2-ebbc94251cf5) that worked for me. You'll need the most bleeding edge Windows 10 Insiders Beta, some beta Nvidia drivers, and a version of Docker thats different from the one most WSL Docker tutorials use. If you're not starting from a clean WSL2 install, be careful.
-3. **Run ./build.sh** This will build the docker image you'll be using. If it's your first time building the image it'll take up to half an hour on most hardware, but after that if you change something it'll probably only take a second or two.
-4. **Run ./run.sh** This will spin up the docker container and start running the system.
-5. **Try it out** When the words "IN DEVELOPMENT" show up in the logs, you're good to go. Visit https://localhost:8080/camera.html to capture input from your webcam, and https://localhost:8080/projector.html to view the output.
+1. **Install WSL2** - Here are [Microsoft's instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+2. **Install nvidia-docker on WSL2** - Here's [a tutorial](https://medium.com/@dalgibbard/docker-with-gpu-support-in-wsl2-ebbc94251cf5) that worked for me. You'll need the most bleeding edge Windows 10 Insiders Beta, some beta Nvidia drivers, and a version of Docker thats different from the one most WSL Docker tutorials use. If you're not starting from a clean WSL2 install, be careful.
+3. **Run ./build.sh** - This will build the docker image you'll be using. If it's your first time building the image it'll take up to half an hour on most hardware, but after that if you change something it'll probably only take a second or two.
+4. **Run ./run.sh** - This will spin up the docker container and start running the system.
+5. **Try it out** - When the words "IN DEVELOPMENT" show up in the logs, you're good to go. Visit https://localhost:8080/camera.html to capture input from your webcam, and https://localhost:8080/projector.html to view the output.
 
 Due to issues with WSL2 and the Windows networking stack, you may run into difficulty if you try and access Stylevision from another computer in your local network. Hopefully this will improve in the future.
 
@@ -54,15 +54,15 @@ If you don't have an Nvidia GPU, you won't be able to do local development with 
 
 Note: All these bash scripts and such are built to run on either Linux, macOS or Windows Subsystem for Linux. Don't try and do this on Windows proper.
 
-1. **Buy a domain and point the nameservers at Cloudflare** This will probably be under "Advanced DNS Settings" or something. Whenever I've used Cloudflare, the nameservers they give me are `liv.ns.cloudflare.com` and `scott.ns.cloudflare.com` although they do have others. After you do this, it can take **up to 48 hours** for the DNS system to start using the new nameservers (although sometimes it only takes an hour or two). So I'd advise you to **do this first**, then take care of the other things while that's happening.
-2. **Set up AWS** Get an AWS account. Install the AWS CLI for your OS and log in with your credentials.
-3. **Set up Cloudflare** Sign up for a free account. Create an API Token. When assigning permissions, make sure to add the "Zone" + "Edit" permission under the "Zone" category.
-4. **Install the other tools** You'll need Terraform and Packer (both free, both from Hashicorp). You may also want Docker and Docker Compose if you're going to use custom containers, but if you're on WSL1 (which doesn't support Docker well) you can skip it.
-5. **Fill out the tfvars file** By this point you should have all the keys and such that you'll need. Make a copy of the `terraform.template.tfvars` file, call it `terraform.tfvars` (it will be gitignored because you're about to enter sensitive information into it) and fill in the keys and values you got during the previous steps.
-6. **Build an AMI with Packer** Go into `./packer` and run `./build.sh (whatever shortname you put in the tfvars file)`. This will build the AMI you'll be using. This process takes about half an hour, because it pulls down the stylevision docker image so that the layers are cached when your VM starts.
-7. **Run terraform once to set it up** In `./terraform`, run the command `terraform apply -auto-approve`. This will set up Cloudflare and an S3 bucket (for storing networks and SSL certs).
-8. **Upload the pretrained networks to S3** Log into AWS, find the `(shortname)-secret` bucket and upload the folder `./pretrained-networks` to that bucket (the whole folder itself, not just the contents).
-9. **Check if your nameservers are resolving yet** Run the command `dig @8.8.8.8 +short NS YOUR.DOMAIN` and make sure it's pointing at the new nameservers. Wait until it is before moving to step 10.
-10. **Fetch the SSL certificates** In `./terraform`, run the command `terraform apply -auto-approve -var run_cert_service=true` to start a VM that will fetch SSL certificates. Then run `terraform apply -auto-approve` to shut it down.
-11. **Fire it up** There is an appropriately named script in `./terraform` called `./fireitup.sh` that starts a VM (or replaces it if you've changed anything in your `terraform.tfvars`) and then SSH's into it. Once you've SSH'd in, tap up-arrow on the keyboard, all the handy monitoring commands are already in the bash history. `./status-feed.sh` should be good for monitoring what's going on.
-12. **Try it out!** When the words "IN PRODUCTION" show up in the logs, you're good to go. Visit https://show.(your domain name)/camera.html on a device that has a camera, and https://show.(your domain name)/projector.html to view the output.
+1. **Buy a domain and point the nameservers at Cloudflare** - This will probably be under "Advanced DNS Settings" or something. Whenever I've used Cloudflare, the nameservers they give me are `liv.ns.cloudflare.com` and `scott.ns.cloudflare.com` although they do have others. After you do this, it can take **up to 48 hours** for the DNS system to start using the new nameservers (although sometimes it only takes an hour or two). So I'd advise you to **do this first**, then take care of the other things while that's happening.
+2. **Set up AWS** - Get an AWS account. Install the AWS CLI for your OS and log in with your credentials.
+3. **Set up Cloudflare** - Sign up for a free account. Create an API Token. When assigning permissions, make sure to add the "Zone" + "Edit" permission under the "Zone" category.
+4. **Install the other tools** - You'll need Terraform and Packer (both free, both from Hashicorp). You may also want Docker and Docker Compose if you're going to use custom containers, but if you're on WSL1 (which doesn't support Docker well) you can skip it.
+5. **Fill out the tfvars file** - By this point you should have all the keys and such that you'll need. Make a copy of the `terraform.template.tfvars` file, call it `terraform.tfvars` (it will be gitignored because you're about to enter sensitive information into it) and fill in the keys and values you got during the previous steps.
+6. **Build an AMI with Packer** - Go into `./packer` and run `./build.sh (whatever shortname you put in the tfvars file)`. This will build the AMI you'll be using. This process takes about half an hour, because it pulls down the stylevision docker image so that the layers are cached when your VM starts.
+7. **Run terraform once to set it up** - In `./terraform`, run the command `terraform apply -auto-approve`. This will set up Cloudflare and an S3 bucket (for storing networks and SSL certs).
+8. **Upload the pretrained networks to S3** - Log into AWS, find the `(shortname)-secret` bucket and upload the folder `./pretrained-networks` to that bucket (the whole folder itself, not just the contents).
+9. **Check if your nameservers are resolving yet** - Run the command `dig @8.8.8.8 +short NS YOUR.DOMAIN` and make sure it's pointing at the new nameservers. Wait until it is before moving to step 10.
+10. **Fetch the SSL certificates** - In `./terraform`, run the command `terraform apply -auto-approve -var run_cert_service=true` to start a VM that will fetch SSL certificates. Then run `terraform apply -auto-approve` to shut it down.
+11. **Fire it up** - There is an appropriately named script in `./terraform` called `./fireitup.sh` that starts a VM (or replaces it if you've changed anything in your `terraform.tfvars`) and then SSH's into it. Once you've SSH'd in, tap up-arrow on the keyboard, all the handy monitoring commands are already in the bash history. `./status-feed.sh` should be good for monitoring what's going on.
+12. **Try it out!** - When the words "IN PRODUCTION" show up in the logs, you're good to go. Visit https://show.(your-domain-name)/camera.html on a device that has a camera, and https://show.(your-domain-name)/projector.html to view the output.
