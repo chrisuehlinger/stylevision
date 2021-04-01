@@ -22,7 +22,13 @@
         },
         "instance_type": "t3a.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "{{user `short_name`}}-amd64"
+        "ami_name": "{{user `short_name`}}-amd64",
+        "launch_block_device_mappings": [
+          {
+             "device_name": "/dev/sda1",
+             "volume_size": 108
+          }
+        ]
       }
     ],
     "provisioners": [
