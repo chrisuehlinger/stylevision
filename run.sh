@@ -46,7 +46,7 @@ then
         -e "FRAME_WIDTH=${FRAME_WIDTH}" \
         -e "FRAME_HEIGHT=${FRAME_HEIGHT}" \
         -e "PERFORM_TRANSFER=${PERFORM_TRANSFER}" \
-        -it uehreka/stylevision
+        -it uehreka/stylevision 
 else
     docker run --rm \
         --shm-size=1g \

@@ -27,8 +27,6 @@ COPY ./*.go ./
 RUN go build pion-receiver.go && go build pion-sender.go
 
 COPY www www 
-COPY ./*.conf ./
-COPY ./*.sdp ./
 COPY ./*.py ./
 COPY ./*.sh ./
 
