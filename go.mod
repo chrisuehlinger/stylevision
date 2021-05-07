@@ -1,4 +1,4 @@
-module darger
+module github.com/chrisuehlinger/stylevision
 
 go 1.16
 

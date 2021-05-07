@@ -19,17 +19,19 @@ NETWORK_NAME="darger4"
 # MODEL_VERSION="optimized"
 MODEL_VERSION="trtfp16"
 
-PERFORM_TRANSFER="false"
-# PERFORM_TRANSFER="true"
+# PERFORM_TRANSFER="false"
+PERFORM_TRANSFER="true"
 
 FRAME_WIDTH=1280
 FRAME_HEIGHT=720
 
-# IN_CODEC="h264"
-IN_CODEC="vp8"
+IN_CODEC="h264" # Only one that works right now, but it takes a few seconds to start actually working
+# IN_CODEC="vp8"
+# IN_CODEC="vp9"
 
-# OUT_CODEC="h264"
+# OUT_CODEC="h264" # Induces an 8-10 second delay
 OUT_CODEC="vp8"
+# OUT_CODEC="vp9"
 
 # sudo rm -fdr logs/ffwd
 # mkdir logs/ffwd

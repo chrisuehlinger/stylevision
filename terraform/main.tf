@@ -60,4 +60,6 @@ module "show_service" {
   frame_width = var.frame_width
   frame_height = var.frame_height
   perform_transfer = var.perform_transfer
+  in_codec = var.in_codec
+  out_codec = var.out_codec
 }

@@ -14,4 +14,7 @@ then
 elif [[ $OUT_CODEC = "vp8" ]]
 then
     ffmpeg -hide_banner -f rawvideo -pixel_format rgb24 -video_size "${FRAME_WIDTH}x${FRAME_HEIGHT}" -r 30 -i - -an -c:v libvpx -b:v 4M -deadline realtime -pix_fmt yuv420p -r 30 -f ivf - | ./pion-sender
+elif [[ $OUT_CODEC = "vp9" ]]
+then
+    ffmpeg -hide_banner -f rawvideo -pixel_format rgb24 -video_size "${FRAME_WIDTH}x${FRAME_HEIGHT}" -r 30 -i - -an -c:v libvpx-vp9 -b:v 2M -deadline realtime -pix_fmt yuv420p -r 30 -f ivf - | ./pion-sender
 fi

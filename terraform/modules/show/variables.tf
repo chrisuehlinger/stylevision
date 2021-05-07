@@ -33,3 +33,7 @@ variable "frame_height" {
 
 variable "perform_transfer" {
 }
+variable "in_codec" {
+}
+variable "out_codec" {
+}

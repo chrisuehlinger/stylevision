@@ -52,6 +52,8 @@ then
         -e "FRAME_WIDTH=$(jq -r '.FRAME_WIDTH' < /var/stylevision-options.json)" \
         -e "FRAME_HEIGHT=$(jq -r '.FRAME_HEIGHT' < /var/stylevision-options.json)" \
         -e "PERFORM_TRANSFER=$(jq -r '.PERFORM_TRANSFER' < /var/stylevision-options.json)" \
+        -e "IN_CODEC=$(jq -r '.IN_CODEC' < /var/stylevision-options.json)" \
+        -e "OUT_CODEC=$(jq -r '.OUT_CODEC' < /var/stylevision-options.json)" \
         -t uehreka/stylevision &
 else
     echo "NO NVIDIA DOCKER"
@@ -67,6 +69,8 @@ else
         -e "FRAME_WIDTH=$(jq -r '.FRAME_WIDTH' < /var/stylevision-options.json)" \
         -e "FRAME_HEIGHT=$(jq -r '.FRAME_HEIGHT' < /var/stylevision-options.json)" \
         -e "PERFORM_TRANSFER=$(jq -r '.PERFORM_TRANSFER' < /var/stylevision-options.json)" \
+        -e "IN_CODEC=$(jq -r '.IN_CODEC' < /var/stylevision-options.json)" \
+        -e "OUT_CODEC=$(jq -r '.OUT_CODEC' < /var/stylevision-options.json)" \
         -t uehreka/stylevision &
 fi
 

@@ -12,3 +12,5 @@ model_version = "optimized" // Which version of the model to use. "constant" and
 frame_width = 960
 frame_height = 540
 perform_transfer = "false" // Set this to "false" if you want to test the system without doing style transfer. Whether true or false, this has to be a string and not a boolean for, uh... reasons
+in_codec = "h264"
+out_codec = "vp8"
