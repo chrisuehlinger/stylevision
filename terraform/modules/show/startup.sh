@@ -1,5 +1,5 @@
 #!/bin/bash -ex
-cat <<EOF > /var/darger-options.json;
+cat <<EOF > /var/stylevision-options.json;
 {
     "NETWORK_NAME":"${network_name}",
     "MODEL_VERSION":"${model_version}",

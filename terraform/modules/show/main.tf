@@ -69,8 +69,8 @@ resource "aws_security_group" "security_group" {
   }
 
   tags = {
-    DargervisionShow = var.short_name
-    DargervisionResourceType = "sg"
+    StylevisionShow = var.short_name
+    StylevisionResourceType = "sg"
   }
 }
 
@@ -94,8 +94,8 @@ resource "aws_iam_role" "role" {
 EOF
 
   tags = {
-    DargervisionShow = var.short_name
-    DargervisionResourceType = "role"
+    StylevisionShow = var.short_name
+    StylevisionResourceType = "role"
   }
 }
 
@@ -200,8 +200,8 @@ resource "aws_spot_instance_request" "service" {
   user_data = data.template_file.startup_script.rendered
 
   tags = {
-    DargervisionShow = var.short_name
-    DargervisionResourceType = "vm"
+    StylevisionShow = var.short_name
+    StylevisionResourceType = "vm"
   }
 }
 
@@ -226,8 +226,8 @@ resource "aws_instance" "service" {
   user_data = data.template_file.startup_script.rendered
 
   tags = {
-    DargervisionShow = var.short_name
-    DargervisionResourceType = "vm"
+    StylevisionShow = var.short_name
+    StylevisionResourceType = "vm"
   }
 }
 

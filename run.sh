@@ -19,11 +19,17 @@ NETWORK_NAME="darger4"
 # MODEL_VERSION="optimized"
 MODEL_VERSION="trtfp16"
 
-PERFORM_TRANSFER="true"
 # PERFORM_TRANSFER="false"
+PERFORM_TRANSFER="true"
 
 FRAME_WIDTH=960
 FRAME_HEIGHT=540
+
+IN_CODEC="h264"
+# IN_CODEC="vp8"
+
+OUT_CODEC="h264"
+# OUT_CODEC="vp8"
 
 # sudo rm -fdr logs/ffwd
 # mkdir logs/ffwd

@@ -1,8 +1,4 @@
-# FROM nvcr.io/nvidia/tensorflow:20.10-tf1-py3
 FROM nvcr.io/nvidia/tensorflow:20.12-tf1-py3
-# FROM nvcr.io/nvidia/tensorflow:21.01-tf1-py3
-# FROM nvcr.io/nvidia/tensorflow:21.03-tf1-py3
-
 
 # Supress warnings about missing front-end. As recommended at:
 # http://stackoverflow.com/questions/22466255/is-it-possibe-to-answer-dialog-questions-when-installing-under-docker

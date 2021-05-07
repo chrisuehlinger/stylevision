@@ -137,7 +137,7 @@ resource "aws_spot_instance_request" "certs_service" {
   # we specified
   ami = data.aws_ami.ubuntu_ami.image_id
 
-  availability_zone = "us-east-1b"
+  availability_zone = "us-east-1a"
 
   iam_instance_profile = aws_iam_instance_profile.certs_profile.name
 
@@ -148,8 +148,8 @@ resource "aws_spot_instance_request" "certs_service" {
   vpc_security_group_ids = [aws_security_group.certs_security_group.id]
 
   tags = {
-    DargervisionShow = var.short_name
-    DargervisionResourceType = "cert_fetcher"
+    StylevisionShow = var.short_name
+    StylevisionResourceType = "cert_fetcher"
   }
 }
 
@@ -172,8 +172,8 @@ resource "aws_instance" "certs_service" {
   vpc_security_group_ids = [aws_security_group.certs_security_group.id]
 
   tags = {
-    DargervisionShow = var.short_name
-    DargervisionResourceType = "cert_fetcher"
+    StylevisionShow = var.short_name
+    StylevisionResourceType = "cert_fetcher"
   }
 }
 

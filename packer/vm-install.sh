@@ -35,9 +35,9 @@ docker pull uehreka/stylevision:latest
 docker system prune -f
 export LD_LIBRARY_PATH="/usr/lib64/openmpi/lib/:/usr/local/cuda/lib64:/usr/local/lib:/usr/lib:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/mpi/lib:/lib/:/usr/local/cuda/lib64:/usr/local/lib:/usr/lib:/usr/local/cuda/extras/CUPTI/lib64:/opt/amazon/openmpi/lib:/usr/local/cuda/lib:/opt/amazon/efa/lib:/usr/local/mpi/lib:/usr/lib64/openmpi/lib/:/usr/local/cuda/lib64:/usr/local/lib:/usr/lib:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/mpi/lib:/lib/:"
 nvidia-smi
-cat /var/darger-options.json
+cat /var/stylevision-options.json
 uptime
-if [[ $(jq -r '.PERFORM_TRANSFER' < /var/darger-options.json) = true ]]
+if [[ $(jq -r '.PERFORM_TRANSFER' < /var/stylevision-options.json) = true ]]
 then
     echo "YES NVIDIA DOCKER"
     docker run --gpus all --rm \
@@ -47,11 +47,11 @@ then
         --volume '/mnt/secret/letsencrypt:/etc/letsencrypt' \
         --volume '/mnt/secret/pretrained-networks:/var/pretrained-networks' \
         -e "ENV=production" \
-        -e "NETWORK_NAME=$(jq -r '.NETWORK_NAME' < /var/darger-options.json)" \
-        -e "MODEL_VERSION=$(jq -r '.MODEL_VERSION' < /var/darger-options.json)" \
-        -e "FRAME_WIDTH=$(jq -r '.FRAME_WIDTH' < /var/darger-options.json)" \
-        -e "FRAME_HEIGHT=$(jq -r '.FRAME_HEIGHT' < /var/darger-options.json)" \
-        -e "PERFORM_TRANSFER=$(jq -r '.PERFORM_TRANSFER' < /var/darger-options.json)" \
+        -e "NETWORK_NAME=$(jq -r '.NETWORK_NAME' < /var/stylevision-options.json)" \
+        -e "MODEL_VERSION=$(jq -r '.MODEL_VERSION' < /var/stylevision-options.json)" \
+        -e "FRAME_WIDTH=$(jq -r '.FRAME_WIDTH' < /var/stylevision-options.json)" \
+        -e "FRAME_HEIGHT=$(jq -r '.FRAME_HEIGHT' < /var/stylevision-options.json)" \
+        -e "PERFORM_TRANSFER=$(jq -r '.PERFORM_TRANSFER' < /var/stylevision-options.json)" \
         -t uehreka/stylevision &
 else
     echo "NO NVIDIA DOCKER"
@@ -62,11 +62,11 @@ else
         --volume '/mnt/secret/letsencrypt:/etc/letsencrypt' \
         --volume '/mnt/secret/pretrained-networks:/var/pretrained-networks' \
         -e "ENV=production" \
-        -e "NETWORK_NAME=$(jq -r '.NETWORK_NAME' < /var/darger-options.json)" \
-        -e "MODEL_VERSION=$(jq -r '.MODEL_VERSION' < /var/darger-options.json)" \
-        -e "FRAME_WIDTH=$(jq -r '.FRAME_WIDTH' < /var/darger-options.json)" \
-        -e "FRAME_HEIGHT=$(jq -r '.FRAME_HEIGHT' < /var/darger-options.json)" \
-        -e "PERFORM_TRANSFER=$(jq -r '.PERFORM_TRANSFER' < /var/darger-options.json)" \
+        -e "NETWORK_NAME=$(jq -r '.NETWORK_NAME' < /var/stylevision-options.json)" \
+        -e "MODEL_VERSION=$(jq -r '.MODEL_VERSION' < /var/stylevision-options.json)" \
+        -e "FRAME_WIDTH=$(jq -r '.FRAME_WIDTH' < /var/stylevision-options.json)" \
+        -e "FRAME_HEIGHT=$(jq -r '.FRAME_HEIGHT' < /var/stylevision-options.json)" \
+        -e "PERFORM_TRANSFER=$(jq -r '.PERFORM_TRANSFER' < /var/stylevision-options.json)" \
         -t uehreka/stylevision &
 fi
 

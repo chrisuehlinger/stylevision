@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 close_it_down(){
-    docker kill $(docker ps -q)
+    docker kill "$(docker ps -q)"
 }
 
 trap "close_it_down" SIGINT
@@ -29,10 +29,10 @@ mkdir logs/training
 while true
 do
     time sudo docker run --runtime=nvidia --rm --privileged \
-        --volume $(pwd)/vgg:/var/vgg \
-        --volume $(pwd)/training-images-sample:/var/training-images \
-        --volume $(pwd)/pretrained-networks:/var/pretrained-networks \
-        --volume $(pwd)/logs/training:/var/logs/training \
+        --volume "$(pwd)/vgg:/var/vgg" \
+        --volume "$(pwd)/training-images-sample:/var/training-images" \
+        --volume "$(pwd)/pretrained-networks:/var/pretrained-networks" \
+        --volume "$(pwd)/logs/training:/var/logs/training" \
         -e "NUM_EPOCHS=${NUM_EPOCHS}" \
         -e "NETWORK_NAME=${NETWORK_NAME}" \
         --network=host \
@@ -46,8 +46,8 @@ done
 
 printf "Finish time: %s\n" "$(date)" >> "pretrained-networks/${NETWORK_NAME}-network/training-metadata.txt"
 
-sudo chmod 777 pretrained-networks/${NETWORK_NAME}-network
-for filename in ./pretrained-networks/${NETWORK_NAME}-network/*; do
-    echo $filename
-    sudo chmod 777 ${filename}
+sudo chmod 777 "pretrained-networks/${NETWORK_NAME}-network"
+for filename in "./pretrained-networks/${NETWORK_NAME}-network/"*; do
+    echo "${filename}"
+    sudo chmod 777 "${filename}"
 done
