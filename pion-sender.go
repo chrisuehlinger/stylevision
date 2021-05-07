@@ -24,14 +24,22 @@ import (
 
 func main() {
 	fmt.Println("START")
+	outCodec := os.Getenv("OUT_CODEC")
+	mimeType := "video/" + outCodec
+	var payloadType webrtc.PayloadType
+	if outCodec == "h264" {
+		payloadType = 102
+	} else if outCodec == "vp8" {
+		payloadType = 96
+	}
 
 	// Create a MediaEngine object to configure the supported codec
 	m := webrtc.MediaEngine{}
 
 	// Setup the codecs you want to use.
 	if err := m.RegisterCodec(webrtc.RTPCodecParameters{
-		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: "video/vp8", ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
-		PayloadType:        96,
+		RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: mimeType, ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+		PayloadType:        payloadType,
 	}, webrtc.RTPCodecTypeVideo); err != nil {
 		panic(err)
 	}
@@ -57,7 +65,7 @@ func main() {
 	iceConnectedCtx, iceConnectedCtxCancel := context.WithCancel(context.Background())
 
 	// Create Track that we send video back to browser on
-	videoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: "video/vp8"}, "video", "pion")
+	videoTrack, err := webrtc.NewTrackLocalStaticSample(webrtc.RTPCodecCapability{MimeType: mimeType}, "video", "pion")
 	if err != nil {
 		panic(err)
 	}
@@ -82,7 +90,7 @@ func main() {
 		}
 	}()
 
-	go func() {
+	writeH264 := func() {
 		reader, readErr := h264reader.NewReader(os.Stdin)
 		if readErr != nil {
 			panic(readErr)
@@ -111,7 +119,44 @@ func main() {
 			}
 
 		}
-	}()
+	}
+
+	writeVP8 := func() {
+		reader, _, readErr := ivfreader.NewWith(os.Stdin)
+		if readErr != nil {
+			panic(readErr)
+		}
+
+		// Wait for connection established
+
+		for {
+			frame, _, readErr := reader.ParseNextFrame()
+			if readErr == io.EOF {
+				fmt.Printf("All video frames parsed and sent")
+				os.Exit(0)
+			}
+
+			if readErr != nil {
+				panic(readErr)
+			}
+
+			select {
+			case <-iceConnectedCtx.Done():
+				if writeErr := videoTrack.WriteSample(media.Sample{Data: frame, Duration: time.Second}); writeErr != nil {
+					panic(writeErr)
+				}
+			case <-time.After(time.Millisecond):
+				continue
+			}
+
+		}
+	}
+
+	if outCodec == "h264" {
+		go writeH264()
+	} else if outCodec == "vp8" {
+		go writeVP8()
+	}
 
 	// Set the handler for ICE connection state
 	// This will notify you when the peer has connected/disconnected

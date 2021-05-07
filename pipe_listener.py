@@ -22,7 +22,7 @@ class PipeListener(threading.Thread):
         self.new_frame_lock = new_frame_lock
         self.image_queue = image_queue
         self.error_event = error_event
-        self.in_process = Popen(f'./pipe-in.sh {config["width"]} {config["height"]}', shell=True, stdout=PIPE, stderr=sys.stderr)
+        self.in_process = Popen(f'./pipe-in.sh', shell=True, stdout=PIPE, stderr=sys.stderr)
 
 
         # Start the thread

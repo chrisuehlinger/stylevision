@@ -10,13 +10,36 @@ import (
 	"net/http"
 	"os"
 
-
 	"github.com/pion/rtcp"
 	"github.com/pion/webrtc/v3"
+	"github.com/pion/webrtc/v3/pkg/media"
 	"github.com/pion/webrtc/v3/pkg/media/h264writer"
+	"github.com/pion/webrtc/v3/pkg/media/ivfwriter"
 )
 
+func getWriter(inCodec string) (w media.Writer) {
+	if inCodec == "h264" {
+		return h264writer.NewWith(os.Stdout)
+	} else if inCodec == "vp8" {
+		writer, err := ivfwriter.NewWith(os.Stdout)
+		if err != nil {
+			panic(err)
+		}
+		return writer
+	} else {
+		return nil
+	}
+}
+
 func main() {
+	inCodec := os.Getenv("IN_CODEC")
+	mimeType := "video/" + inCodec
+	var payloadType webrtc.PayloadType
+	if inCodec == "h264" {
+		payloadType = 102
+	} else if inCodec == "vp8" {
+		payloadType = 96
+	}
 
 	http.HandleFunc("/connectreceiver", func(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
@@ -32,8 +55,8 @@ func main() {
 			// Setup the codecs you want to use.
 			// We'll use H264 but you can also define your own
 			if err := m.RegisterCodec(webrtc.RTPCodecParameters{
-				RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: "video/h264", ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
-				PayloadType:        102,
+				RTPCodecCapability: webrtc.RTPCodecCapability{MimeType: mimeType, ClockRate: 90000, Channels: 0, SDPFmtpLine: "", RTCPFeedback: nil},
+				PayloadType:        payloadType,
 			}, webrtc.RTPCodecTypeVideo); err != nil {
 				panic(err)
 			}
@@ -59,7 +82,7 @@ func main() {
 			// iceConnectedCtx, iceConnectedCtxCancel := context.WithCancel(context.Background())
 
 			// Create Track that we send video back to browser on
-			outputTrack, err := webrtc.NewTrackLocalStaticRTP(webrtc.RTPCodecCapability{MimeType: "video/h264"}, "video", "pion")
+			outputTrack, err := webrtc.NewTrackLocalStaticRTP(webrtc.RTPCodecCapability{MimeType: mimeType}, "video", "pion")
 			if err != nil {
 				panic(err)
 			}
@@ -82,7 +105,7 @@ func main() {
 				}
 			}()
 
-			outFile := h264writer.NewWith(os.Stdout)
+			outFile := getWriter(inCodec)
 
 			peerConnection.OnTrack(func(track *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
 				// Send a PLI on an interval so that the publisher is pushing a keyframe every rtcpPLIInterval

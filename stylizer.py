@@ -94,7 +94,7 @@ with tf.compat.v1.Session(config=tf_config, graph=tf.Graph()) as sess:
         sess.run(output_node, feed_dict=feed_dict)
         eprint('STYLIZER RUN #1 COMPLETE')
 
-    out_process = Popen(f'./pipe-out.sh {config["width"]} {config["height"]}', shell=True, stdin=PIPE, stderr=sys.stderr)
+    out_process = Popen(f'./pipe-out.sh', shell=True, stdin=PIPE, stderr=sys.stderr)
     pipe_listener = PipeListener(new_frame_event, new_frame_lock, new_frame_queue, config, error_event)
     display_start_time = time.time()
     

@@ -19,17 +19,17 @@ NETWORK_NAME="darger4"
 # MODEL_VERSION="optimized"
 MODEL_VERSION="trtfp16"
 
-# PERFORM_TRANSFER="false"
-PERFORM_TRANSFER="true"
+PERFORM_TRANSFER="false"
+# PERFORM_TRANSFER="true"
 
-FRAME_WIDTH=960
-FRAME_HEIGHT=540
+FRAME_WIDTH=1280
+FRAME_HEIGHT=720
 
-IN_CODEC="h264"
-# IN_CODEC="vp8"
+# IN_CODEC="h264"
+IN_CODEC="vp8"
 
-OUT_CODEC="h264"
-# OUT_CODEC="vp8"
+# OUT_CODEC="h264"
+OUT_CODEC="vp8"
 
 # sudo rm -fdr logs/ffwd
 # mkdir logs/ffwd
@@ -52,6 +52,8 @@ then
         -e "FRAME_WIDTH=${FRAME_WIDTH}" \
         -e "FRAME_HEIGHT=${FRAME_HEIGHT}" \
         -e "PERFORM_TRANSFER=${PERFORM_TRANSFER}" \
+        -e "IN_CODEC=${IN_CODEC}" \
+        -e "OUT_CODEC=${OUT_CODEC}" \
         -it uehreka/stylevision 
 else
     docker run --rm \
@@ -69,5 +71,7 @@ else
         -e "FRAME_WIDTH=${FRAME_WIDTH}" \
         -e "FRAME_HEIGHT=${FRAME_HEIGHT}" \
         -e "PERFORM_TRANSFER=${PERFORM_TRANSFER}" \
+        -e "IN_CODEC=${IN_CODEC}" \
+        -e "OUT_CODEC=${OUT_CODEC}" \
         -it uehreka/stylevision
 fi
