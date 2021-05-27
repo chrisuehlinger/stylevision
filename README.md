@@ -2,6 +2,8 @@
 
 Realtime Style transfer using WebRTC, ffmpeg and Tensorflow.
 
+![Example of Stylevision in action](examples/540-example.gif)
+
 ## Local Installation
 
 You'll need an Nvidia graphics card (and if you want to use the Tensor Core networks, you'll need an RTX card specifically). This is because Tensorflow uses CUDA to execute neural networks really fast, and CUDA is an Nvidia framework that only works on their graphics cards. In theory Tensorflow can also run on OpenCL (which means AMD and possible Intel GPUs), and I'm down to consider adding an OpenCL flag if someone submits a PR that gets it working, but my hunch is that it would be a lot slower.
